@@ -17,7 +17,7 @@ public class DruidConfig {
     @Value("${druid-monitor.white-list}")
     private String whiteList;
 
-    @Value("${druid-monitor.black-list")
+    @Value("${druid-monitor.black-list}")
     private String blackList;
 
     @Value("${druid-monitor.username}")
