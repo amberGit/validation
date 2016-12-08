@@ -9,7 +9,7 @@ import com.example.validation.entity.Response;
  * @since 2016-11-30 0:26
  */
 public interface Downloader {
-    Response download(Request request, Context context);
+    Response download(Request request, Context context) throws InstantiationException;
 
     Response download(Request request);
 }

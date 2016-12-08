@@ -3,25 +3,21 @@ package com.example.validation.downloader;
 import com.example.validation.entity.Context;
 import com.example.validation.entity.Request;
 import com.example.validation.entity.Response;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-;
 
 /**
  * @author Amber [johnnyven@outlook.com]
@@ -45,15 +41,17 @@ public class HttpClientDownloader implements Downloader {
         HttpUriRequest uriRequest = requestBuilder.build();
 
 
+        Response response = null;
         try (CloseableHttpResponse httpResponse = httpClient.execute(uriRequest)) {
-
-            Header encodingHeader = httpResponse.getEntity().getContentEncoding();
+            HttpEntity entity = httpResponse.getEntity();
+            Header encodingHeader = entity.getContentEncoding();
             String charset = encodingHeader != null ? encodingHeader.getValue() : "";
 
-            return Response.builder()
-                    .bytes(EntityUtils.toByteArray(httpResponse.getEntity()))
-                    .content((InputStream) BeanUtils.cloneBean(httpResponse.getEntity().getContent()))
-                    .text(EntityUtils.toString(httpResponse.getEntity()))
+            response = Response.builder()
+                    .bytes(EntityUtils.toByteArray(entity))
+//                    .content((InputStream) BeanUtils.cloneBean(entity.getContent()))
+//                    .content(entity.getContent())
+//                    .text(EntityUtils.toString(entity))
                     .encoding(charset)
                     .headers(
                             Stream.of(httpResponse.getAllHeaders())
@@ -64,11 +62,11 @@ public class HttpClientDownloader implements Downloader {
                     ).statusCode(httpResponse.getStatusLine().getStatusCode())
                     .request(request)
                     .build();
-        } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException | IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return null;
+        return response;
     }
 
     @Override
@@ -78,14 +76,16 @@ public class HttpClientDownloader implements Downloader {
 
 
     private CloseableHttpClient getHttpClient(boolean useProxy) {
-        HttpClientBuilder clientBuilder = HttpClients.custom();
+//        HttpClientBuilder clientBuilder = HttpClients.custom();
+//
+//        if (useProxy) {
+//            clientBuilder.setProxy(getProxy());
+//        }
+//
+//
+//        return clientBuilder.build();
 
-        if (useProxy) {
-            clientBuilder.setProxy(getProxy());
-        }
-
-
-        return clientBuilder.build();
+        return HttpClients.createDefault();
 
     }
 
