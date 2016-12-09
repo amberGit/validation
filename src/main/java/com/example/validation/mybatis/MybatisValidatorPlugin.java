@@ -19,9 +19,11 @@ import java.util.Properties;
 public class MybatisValidatorPlugin implements Interceptor{
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
-        // validate
         Object param = invocation.getArgs()[1];
         MappedStatement mappedStatement = (MappedStatement) invocation.getArgs()[0];
+
+        // validate
+        validate(param, mappedStatement);
         return invocation.proceed();
     }
 
@@ -32,11 +34,15 @@ public class MybatisValidatorPlugin implements Interceptor{
      */
     private void validate(Object param, MappedStatement mappedStatement) {
         if (param == null) {
+            Class paramType = mappedStatement.getParameterMap().getType();
+
 
         }
 
         if (param instanceof Map) {
-
+            System.out.println("param type is map");
+        } else {
+            System.out.println("param type is not map");
         }
     }
 
