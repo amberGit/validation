@@ -1,6 +1,6 @@
 package com.example.validation.entity;
 
-;import java.util.Map;
+import java.util.Map;
 
 /**
  * @author Amber [johnnyven@outlook.com]
