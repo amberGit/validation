@@ -27,8 +27,6 @@
         <setting name="defaultStatementTimeout" value="25000" />
     </settings>
 
-    <!-- 分页助手 -->
-    <plugins>
-       <plugin interceptor="com.example.validation.mybatis.MybatisValidatorPlugin"/>
-    </plugins>
+    <!-- 插件 -->
+
 </configuration>

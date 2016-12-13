@@ -3,6 +3,7 @@ package com.example.validation;
 import com.example.validation.annotation.Validation;
 import com.example.validation.entity.User;
 import com.example.validation.mapper.UserMapper;
+import com.example.validation.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +27,9 @@ public class ValidationDemoApplicationTests {
     @Autowired
     @Qualifier("hibernateValidator")
     private Validator validator;
+
+    @Autowired
+    private UserService userService;
 
     private User user;
 
@@ -60,7 +64,15 @@ public class ValidationDemoApplicationTests {
                     if (user.getClass().getName().equals(item.getBeanClassName())) {
                         Set<ConstraintViolation<User>> violationSet = validator.validate(user);
                         violationSet.forEach(v -> System.out.println("invalid value: " + v.getInvalidValue()));
+
                     }
                 });
+    }
+
+
+    @Test
+    public void aopTest() throws Exception {
+        userService.add(user);
+
     }
 }

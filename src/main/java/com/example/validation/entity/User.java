@@ -51,4 +51,5 @@ public class User {
     public String getRemark() {
         return this.remark;
     }
+
 }

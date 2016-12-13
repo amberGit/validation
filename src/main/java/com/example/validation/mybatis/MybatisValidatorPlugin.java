@@ -1,8 +1,12 @@
 package com.example.validation.mybatis;
 
+import com.example.validation.service.ValidatorService;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.plugin.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Properties;
@@ -16,7 +20,13 @@ import java.util.Properties;
         method = "update",
         args = {MappedStatement.class, Object.class}
 ))
-public class MybatisValidatorPlugin implements Interceptor{
+@Component
+public class MybatisValidatorPlugin implements Interceptor {
+    @Autowired
+    private ValidatorService validatorService;
+
+
+
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         Object param = invocation.getArgs()[1];
@@ -33,17 +43,22 @@ public class MybatisValidatorPlugin implements Interceptor{
      * @param mappedStatement
      */
     private void validate(Object param, MappedStatement mappedStatement) {
-        if (param == null) {
-            Class paramType = mappedStatement.getParameterMap().getType();
-
-
+        if (param != null && param instanceof Map &&
+                (mappedStatement.getSqlCommandType() == SqlCommandType.INSERT ||
+                        mappedStatement.getSqlCommandType() == SqlCommandType.UPDATE)
+                ) {
+            Map<String, Object> paramMap = (Map<String, Object>) param;
+            paramMap.entrySet()
+                    .stream()
+                    .map(Map.Entry::getValue)
+                    .distinct()
+                    .flatMap(it -> validatorService.validate(it).stream())
+                    .forEach(it -> {
+                        System.out.println("error message: " + it.getMessage());
+                        System.out.println("invalid value:" + it.getInvalidValue());
+                    });
         }
 
-        if (param instanceof Map) {
-            System.out.println("param type is map");
-        } else {
-            System.out.println("param type is not map");
-        }
     }
 
 

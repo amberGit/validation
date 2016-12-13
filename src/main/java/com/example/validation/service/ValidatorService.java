@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import java.util.HashSet;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Wen Jiao [jiao_wen@kingdee.com]
@@ -29,7 +31,7 @@ public class ValidatorService {
 
     @Value("${validator.base-packages}")
     private String basePackages;
-    @Value("${validator.annotation-class-path")
+    @Value("${validator.annotation-class-path}")
     private String annotationClassPath;
 
     @Autowired
@@ -40,12 +42,12 @@ public class ValidatorService {
 
     public <T> Set<ConstraintViolation<T>> validate(T obj) {
 
-        for (BeanDefinition annotatedBean: annotatedBeans) {
-            if (obj.getClass().getName().equals(annotatedBean.getBeanClassName())) {
-                return validator.validate(obj);
-            }
+        if (annotatedBeans.stream()
+                .anyMatch(annotateBean -> annotateBean.getBeanClassName().equals(obj.getClass().getName()))
+        ) {
+            return validator.validate(obj);
         }
-        return new HashSet<>();
+        return Collections.emptySet();
     }
 
     @PostConstruct
@@ -54,9 +56,10 @@ public class ValidatorService {
         Class annotationClass = Class.forName(annotationClassPath);
         if (annotationClass.isAnnotation()) {
             scanner.addIncludeFilter(new AnnotationTypeFilter(annotationClass));
-            for (String basePackage: basePackages.split(",")) {
-                annotatedBeans.addAll(scanner.findCandidateComponents(basePackage));
-            }
+
+            annotatedBeans = Arrays.stream(basePackages.split(","))
+                    .flatMap(basePackage -> scanner.findCandidateComponents(basePackage).stream())
+                    .collect(Collectors.toSet());
         }
         else {
             throw new NoSuchAnnotationTypeException();
