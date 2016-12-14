@@ -14,4 +14,6 @@ public interface UserMapper {
 
     @Insert("insert ignore into user (name, number, remark) values(#{user.name}, #{user.number}, #{user.remark})")
     void add(@Param("user") User user);
+
+    int update(@Param("user") User user);
 }
