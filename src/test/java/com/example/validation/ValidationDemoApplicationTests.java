@@ -17,7 +17,6 @@ public class ValidationDemoApplicationTests {
     @Autowired
     private UserMapper userMapper;
 
-
     @Autowired
     private UserService userService;
 
@@ -46,6 +45,13 @@ public class ValidationDemoApplicationTests {
     @Test
     public void aopTest() throws Exception {
         userService.add(user);
+
+    }
+
+    @Test
+    public void updateTest() throws Exception {
+        user.setId(1);
+        int affectRows = userService.update(user);
 
     }
 }

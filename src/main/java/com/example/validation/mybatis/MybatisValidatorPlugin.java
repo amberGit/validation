@@ -55,6 +55,7 @@ public class MybatisValidatorPlugin implements Interceptor {
                     .flatMap(it -> validatorService.validate(it).stream())
                     .forEach(it -> {
                         System.out.println("root bean class name: " + it.getRootBeanClass().getName());
+                        System.out.println("property path: " + it.getPropertyPath());
                         System.out.println("error message: " + it.getMessage());
                         System.out.println("invalid value:" + it.getInvalidValue());
                     });

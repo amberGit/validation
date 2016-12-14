@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.validation.mapper.UserMapper">
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+      insert ignore into user (name, number, remark) values(#{user.name}, #{user.number}, #{user.remark})
+    </insert>
+
+    <update id="update">
+        update user set
+        <if test="user.name != null">
+            name = #{user.name},
+        </if>
+        <if test="user.remark != null">
+            remark = #{user.remark},
+        </if>
+        number = #{user.number}
+        where id = #{user.id}
+    </update>
+
+</mapper>
