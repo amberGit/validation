@@ -29,7 +29,7 @@ public class ValidationDemoApplicationTests {
     @Before
     public void setUp() throws Exception {
         user = new User();
-        user.setName("amberD");
+        user.setName("文话");
         user.setNumber(123L);
         user.setRemark("adhnfjpy23848ygh qaweh;odg-[1q234y 1cv");
 

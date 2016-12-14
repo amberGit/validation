@@ -1,5 +1,6 @@
 package com.example.validation.entity;
 
+import com.example.validation.annotation.ChineseName;
 import com.example.validation.annotation.Validation;
 
 import javax.validation.constraints.DecimalMin;
@@ -14,6 +15,7 @@ import javax.validation.constraints.Size;
 public class User {
     private long id;
     @NotNull
+    @ChineseName
     private String name;
     @DecimalMin(value = "1000")
     private long number;

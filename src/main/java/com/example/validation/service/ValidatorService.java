@@ -8,6 +8,7 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -26,7 +27,7 @@ public class ValidatorService {
 
     private ClassPathScanningCandidateComponentProvider scanner;
     private Set<BeanDefinition> annotatedBeans;
-
+    private ValidatorFactory factory;
     private Validator validator;
 
     @Value("${validator.base-packages}")
@@ -51,7 +52,7 @@ public class ValidatorService {
 
     @PostConstruct
     private void init() throws ClassNotFoundException, NoSuchAnnotationTypeException {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
 
         scanner = new ClassPathScanningCandidateComponentProvider(false);
@@ -68,5 +69,14 @@ public class ValidatorService {
             throw new NoSuchAnnotationTypeException();
         }
 
+    }
+
+    @PreDestroy
+    private void destroy() {
+
+        // If a ValidatorFactory instance is no longer in use,
+        // it should be disposed by calling ValidatorFactory#close().
+        // This will free any resources possibly allocated by the factory.
+        factory.close();
     }
 }
