@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.validation.mapper.UserMapper">
     <insert id="add" useGeneratedKeys="true" keyProperty="id">
-      insert ignore into user (name, number, remark) values(#{user.name}, #{user.number}, #{user.remark})
+        insert ignore into user (name, number, remark) values(#{user.name}, #{user.number}, #{user.remark})
     </insert>
 
     <update id="update">
@@ -19,4 +19,7 @@
         where id = #{user.id}
     </update>
 
+    <insert id="addAll"useGeneratedKeys="true" keyProperty="id">
+
+    </insert>
 </mapper>
