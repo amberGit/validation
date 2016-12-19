@@ -22,10 +22,12 @@ import java.util.Properties;
 ))
 @Component
 public class MybatisValidatorPlugin implements Interceptor {
+    private final ValidatorService validatorService;
+
     @Autowired
-    private ValidatorService validatorService;
-
-
+    public MybatisValidatorPlugin(ValidatorService validatorService) {
+        this.validatorService = validatorService;
+    }
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
